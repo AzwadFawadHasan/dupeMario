@@ -86,6 +86,32 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./src/img/background.png":
+/*!********************************!*\
+  !*** ./src/img/background.png ***!
+  \********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "072d51bcc9c09311d4c2a6708b05bddc.png");
+
+/***/ }),
+
+/***/ "./src/img/hills.png":
+/*!***************************!*\
+  !*** ./src/img/hills.png ***!
+  \***************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "cfffe4c371f5e11d372b398a87c51dd0.png");
+
+/***/ }),
+
 /***/ "./src/img/platform.png":
 /*!******************************!*\
   !*** ./src/img/platform.png ***!
@@ -99,6 +125,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/img/platformSmallTall.png":
+/*!***************************************!*\
+  !*** ./src/img/platformSmallTall.png ***!
+  \***************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "0587f9be8e442eb74b2fe283bbf1a947.png");
+
+/***/ }),
+
 /***/ "./src/js/canvas.js":
 /*!**************************!*\
   !*** ./src/js/canvas.js ***!
@@ -109,6 +148,9 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _img_platform_png__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../img/platform.png */ "./src/img/platform.png");
+/* harmony import */ var _img_hills_png__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../img/hills.png */ "./src/img/hills.png");
+/* harmony import */ var _img_background_png__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../img/background.png */ "./src/img/background.png");
+/* harmony import */ var _img_platformSmallTall_png__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../img/platformSmallTall.png */ "./src/img/platformSmallTall.png");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -116,7 +158,12 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 
+
+
+
 console.log(_img_platform_png__WEBPACK_IMPORTED_MODULE_0__["default"]);
+console.log(_img_hills_png__WEBPACK_IMPORTED_MODULE_1__["default"]);
+console.log(_img_background_png__WEBPACK_IMPORTED_MODULE_2__["default"]);
 var canvas = document.querySelector('canvas'); //the query selector will select the html canvas element
 
 console.log(canvas);
@@ -132,10 +179,11 @@ canvas.height = 576; //window.innerHeight;//making canvas fit to full screen's w
 var gravity = 0.5;
 
 var Player = /*#__PURE__*/function () {
-  //creating player class
+  //creating player class\
   function Player() {
     _classCallCheck(this, Player);
 
+    this.speed = 10;
     this.position = {
       x: 100,
       y: 100
@@ -172,12 +220,18 @@ var Player = /*#__PURE__*/function () {
       this.draw();
       this.position.y += this.velocity.y;
       this.position.x += this.velocity.x;
-      if (this.position.y + this.height + this.velocity.y <= canvas.height) this.velocity.y += gravity;else this.velocity.y = 0; //stops player from going down the canvas
+      if (this.position.y + this.height + this.velocity.y <= canvas.height) this.velocity.y += gravity; //else this.velocity.y = 0;//stops player from going down the canvas
     }
   }]);
 
   return Player;
-}(); //creating a loop for the update method so that we can see the changes to the character in real time
+}();
+
+function createImage(imageSrc) {
+  var image = new Image();
+  image.src = imageSrc;
+  return image;
+} //creating a loop for the update method so that we can see the changes to the character in real time
 
 
 var Platform = /*#__PURE__*/function () {
@@ -211,19 +265,44 @@ var Platform = /*#__PURE__*/function () {
 }();
 
 ;
-var image = new Image();
-image.src = _img_platform_png__WEBPACK_IMPORTED_MODULE_0__["default"];
+
+var GenericObject = /*#__PURE__*/function () {
+  function GenericObject(_ref2) {
+    var x = _ref2.x,
+        y = _ref2.y,
+        image = _ref2.image;
+
+    _classCallCheck(this, GenericObject);
+
+    this.position = {
+      x: x,
+      y: y // we could. also write just only x and y
+
+    };
+    this.image = image;
+    this.width = image.width;
+    this.height = image.height;
+  }
+
+  _createClass(GenericObject, [{
+    key: "draw",
+    value: function draw() {
+      //c.fillStyle='blue'
+      //c.fillRect(this.position.x, this.position.y, this.width, this.height)
+      c.drawImage(this.image, this.position.x, this.position.y);
+    }
+  }]);
+
+  return GenericObject;
+}();
+
+;
+var genericObjects = [];
+var platformImage = createImage(_img_platform_png__WEBPACK_IMPORTED_MODULE_0__["default"]);
+var platformSmallTallImage = createImage(_img_platformSmallTall_png__WEBPACK_IMPORTED_MODULE_3__["default"]);
 var p1 = new Player(); //const platform = new Platform();
 
-var platforms = [new Platform({
-  x: -1,
-  y: 470,
-  image: image
-}), new Platform({
-  x: image.width - 3,
-  y: 470,
-  image: image
-})];
+var platforms = [];
 var keys = {
   right: {
     pressed: false
@@ -233,9 +312,57 @@ var keys = {
   }
 }; //to determine how far our player has moved
 
-var scrollOffset = 0; //p1.draw();
-//p1.update();
-//creating a loop for the update method so that we can see the changes to the character in real time
+var scrollOffset = 0;
+
+function init() {
+  platformImage = createImage(_img_platform_png__WEBPACK_IMPORTED_MODULE_0__["default"]);
+  p1 = new Player(); // platform = new Platform();
+
+  platforms = [new Platform({
+    x: platformImage.width * 4 + 300 - 2 + platformImage.width - platformSmallTallImage.width,
+    y: 270,
+    image: createImage(_img_platformSmallTall_png__WEBPACK_IMPORTED_MODULE_3__["default"])
+  }), new Platform({
+    x: -1,
+    y: 470,
+    image: platformImage
+  }), new Platform({
+    x: platformImage.width - 3,
+    y: 470,
+    image: platformImage
+  }), new Platform({
+    x: platformImage.width * 2 + 100,
+    y: 470,
+    image: platformImage
+  }), new Platform({
+    x: platformImage.width * 3 + 300,
+    y: 470,
+    image: platformImage
+  }), new Platform({
+    x: platformImage.width * 4 + 300 - 2,
+    y: 470,
+    image: platformImage
+  }), new Platform({
+    x: platformImage.width * 5 + 700 - 2,
+    y: 470,
+    image: platformImage
+  })];
+  genericObjects = [new GenericObject({
+    x: -1,
+    y: -1,
+    image: createImage(_img_background_png__WEBPACK_IMPORTED_MODULE_2__["default"])
+  }), new GenericObject({
+    x: -1,
+    y: -1,
+    image: createImage(_img_hills_png__WEBPACK_IMPORTED_MODULE_1__["default"])
+  })]; //to determine how far our player has moved
+
+  scrollOffset = 0; //p1.draw();
+  //p1.update();
+  //creating a loop for the update method so that we can see the changes to the character in real time
+}
+
+init();
 
 function animate() {
   requestAnimationFrame(animate); //console.log('go')
@@ -243,7 +370,11 @@ function animate() {
   c.fillStyle = 'white';
   c.fillRect(0, 0, canvas.width, canvas.height); //clears canvas to help us see the shape of the rectangle
   //c.clearRect(0,0,canvas.width,canvas.height);//clears canvas to help us see the shape of the rectangle
+  //rendering generic objects first on the screen before the platforms
 
+  genericObjects.forEach(function (g) {
+    g.draw();
+  });
   platforms.forEach(function (platform) {
     platform.draw();
   });
@@ -251,24 +382,33 @@ function animate() {
 
   if (keys.right.pressed && p1.position.x < 400) {
     //move right
-    p1.velocity.x = 5;
-  } else if (keys.left.pressed && p1.position.x > 100) {
+    p1.velocity.x = p1.speed;
+  } else if (keys.left.pressed && p1.position.x > 100 || keys.left.pressed && scrollOffset == 0 && p1.position.x > 0) {
     //move left
-    p1.velocity.x = -5;
+    p1.velocity.x = -p1.speed;
+    ;
   } else {
     p1.velocity.x = 0; //stop if nothing is pressed
 
     if (keys.right.pressed) {
-      scrollOffset += 5;
+      scrollOffset += p1.speed;
+      genericObjects.forEach(function (genericObject) {
+        genericObject.position.x -= p1.speed * .65;
+      });
       platforms.forEach(function (platform) {
         //platform.draw();
-        platform.position.x -= 5;
+        platform.position.x -= p1.speed;
+        ;
       });
-    } else if (keys.left.pressed) {
-      scrollOffset -= 5;
+    } else if (keys.left.pressed && scrollOffset > 0) {
+      scrollOffset -= p1.speed;
+      genericObjects.forEach(function (genericObject) {
+        genericObject.position.x += p1.speed * .65;
+      });
       platforms.forEach(function (platform) {
         // platform.draw();
-        platform.position.x += 5;
+        platform.position.x += p1.speed;
+        ;
       });
     }
   } //platform collision detection
@@ -280,11 +420,16 @@ function animate() {
     }
   });
 
-  if (scrollOffset > 2000) {
-    console.log(scrollOffset);
-    console.log('you win'); //document.write('you win')
+  if (scrollOffset > platformImage.width * 5 + 300 - 2) {
+    //    console.log(scrollOffset)
+    console.log('you win'); //    //document.write('you win')
+    //    return
+  }
 
-    return;
+  if (p1.position.y > canvas.height) {
+    console.log('u lose'); //document.write('u lose ')
+
+    init();
   }
 }
 
@@ -297,8 +442,8 @@ animate(); //
 //    console.log('key pressed')
 //})
 
-window.addEventListener('keydown', function (_ref2) {
-  var keyCode = _ref2.keyCode;
+window.addEventListener('keydown', function (_ref3) {
+  var keyCode = _ref3.keyCode;
   console.log(keyCode);
 
   switch (keyCode) {
@@ -319,17 +464,22 @@ window.addEventListener('keydown', function (_ref2) {
 
     case 87:
       console.log('up');
-      p1.velocity.y -= 20;
+
+      if (keyCode.repeat) {
+        return;
+      }
+
+      p1.velocity.y -= 10;
 
       if (p1.position.y <= 0.2 * canvas.height) {
-        p1.velocity.y += 60;
+        p1.velocity.y += 25;
       }
 
       break;
   }
 });
-window.addEventListener('keyup', function (_ref3) {
-  var keyCode = _ref3.keyCode;
+window.addEventListener('keyup', function (_ref4) {
+  var keyCode = _ref4.keyCode;
   console.log(keyCode);
 
   switch (keyCode) {
@@ -349,8 +499,7 @@ window.addEventListener('keyup', function (_ref3) {
       break;
 
     case 87:
-      console.log('up');
-      p1.velocity.y -= 20;
+      console.log('up'); //p1.velocity.y-=20
 
       if (p1.position.y <= 0.2 * canvas.height) {
         p1.velocity.y += 60;

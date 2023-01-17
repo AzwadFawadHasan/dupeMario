@@ -1,6 +1,7 @@
 import platform from '../img/platform.png'
 import hills from '../img/hills.png'
 import background from '../img/background.png'
+import platformSmallTall from '../img/platformSmallTall.png'
 
 console.log(platform)
 console.log(hills)
@@ -20,8 +21,9 @@ let gravity = 0.5;
 
 
 
-class Player{//creating player class
+class Player{//creating player class\
     constructor(){
+        this.speed=10
         this.position={
             x:100,
             y:100,
@@ -107,21 +109,16 @@ class GenericObject{
     
 };
 
-let genericObjects = [new GenericObject({
-    x:-1,y:-1,image:createImage(background)
-}), new GenericObject({
-    x:-1,y:-1,image:createImage(hills)
-})]
+let genericObjects = []
 
 
 
 
 let platformImage = createImage(platform)
+let platformSmallTallImage=createImage(platformSmallTall)
 let p1 = new Player();
 //const platform = new Platform();
-let platforms = [new Platform({x:-1,y:470,image:platformImage}), new Platform({x:platformImage.width-3,y:470, image:platformImage}),
-    new Platform({x:platformImage.width*2+100,y:470, image:platformImage})
-]
+let platforms = []
 
 
 const keys={
@@ -145,10 +142,16 @@ function init(){
  platformImage = createImage(platform)
  p1 = new Player();
 // platform = new Platform();
- platforms = [new Platform({x:-1,y:470,image:platformImage}), new Platform({x:platformImage.width-3,y:470, image:platformImage}),
-    new Platform({x:platformImage.width*2+100,y:470, image:platformImage})
+ platforms = [new Platform({x:platformImage.width*4+300-2 +platformImage.width-platformSmallTallImage.width ,y:270, image:createImage(platformSmallTall)}),new Platform({x:-1,y:470,image:platformImage}), new Platform({x:platformImage.width-3,y:470, image:platformImage}),
+    new Platform({x:platformImage.width*2+100,y:470, image:platformImage}),new Platform({x:platformImage.width*3+300,y:470, image:platformImage})
+    ,new Platform({x:platformImage.width*4+300-2,y:470, image:platformImage}),new Platform({x:platformImage.width*5+700-2,y:470, image:platformImage})    
 ]
 
+genericObjects = [new GenericObject({
+    x:-1,y:-1,image:createImage(background)
+}), new GenericObject({
+    x:-1,y:-1,image:createImage(hills)
+})]
 
 
 
@@ -160,6 +163,8 @@ function init(){
 
 //creating a loop for the update method so that we can see the changes to the character in real time
 }
+
+init();
 function animate(){
     requestAnimationFrame(animate)
     //console.log('go')
@@ -179,35 +184,35 @@ function animate(){
     p1.update();
 
     if(keys.right.pressed && p1.position.x<400){//move right
-        p1.velocity.x=5;
+        p1.velocity.x=p1.speed;
 
 
     }
-    else if(keys.left.pressed && p1.position.x>100){//move left
-        p1.velocity.x=-5;
+    else if((keys.left.pressed && p1.position.x>100) || (keys.left.pressed && scrollOffset==0 && p1.position.x>0)){//move left
+        p1.velocity.x=-p1.speed;;
 
 
     }else{
         p1.velocity.x=0;//stop if nothing is pressed
         if(keys.right.pressed){
-            scrollOffset+=5
+            scrollOffset+=p1.speed;
             genericObjects.forEach(genericObject=>{
-                genericObject.position.x-=3;
+                genericObject.position.x-=p1.speed*.65;
             })
             platforms.forEach((platform)=>{
                 //platform.draw();
-                platform.position.x-=5;
+                platform.position.x-=p1.speed;;
         
             })
 
-        }else if(keys.left.pressed){
-            scrollOffset-=5
+        }else if(keys.left.pressed && scrollOffset>0){
+            scrollOffset-=p1.speed;
             genericObjects.forEach(genericObject=>{
-                genericObject.position.x+=3;
+                genericObject.position.x+=p1.speed*.65;
             })
             platforms.forEach((platform)=>{
                // platform.draw();
-               platform.position.x+=5;
+               platform.position.x+=p1.speed;;
         
             })
             
@@ -229,11 +234,11 @@ function animate(){
     }
 })
 
-if(scrollOffset>2000){
-    console.log(scrollOffset)
+if(scrollOffset>platformImage.width*5+300-2){
+//    console.log(scrollOffset)
     console.log('you win')
-    //document.write('you win')
-    return
+//    //document.write('you win')
+//    return
 }
 if(p1.position.y > canvas.height){
     console.log('u lose')
@@ -279,9 +284,9 @@ window.addEventListener('keydown', ({keyCode})=>{
             case 87:
                 console.log('up')
                 if (keyCode.repeat) { return }
-                p1.velocity.y-=20
+                p1.velocity.y-=10
                 if(p1.position.y<= 0.2*canvas.height){
-                    p1.velocity.y+=60;
+                    p1.velocity.y+=25;
                 }
                 
                 break
@@ -316,7 +321,7 @@ window.addEventListener('keydown', ({keyCode})=>{
         case 87:
             console.log('up')
             
-            p1.velocity.y-=20
+            //p1.velocity.y-=20
             if(p1.position.y<= 0.2*canvas.height){
                 p1.velocity.y+=60;
             }
