@@ -3,13 +3,20 @@ import hills from '../img/hills.png'
 import background from '../img/background.png'
 import platformSmallTall from '../img/platformSmallTall.png'
 
-console.log(platform)
-console.log(hills)
-console.log(background)
+import spriteRunLeft from '../img/spriteRunLeft.png'
+import spriteRunRight from '../img/spriteRunRight.png'
+import spriteStandLeft from '../img/spriteStandLeft.png'
+import spriteStandRight from '../img/spriteStandRight.png'
+
+
+
+console.log(spriteRunRight)
+//console.log(hills)
+//console.log(background)
 const canvas = document.querySelector('canvas'); //the query selector will select the html canvas element
-console.log(canvas )
+//console.log(canvas )
 const c = canvas.getContext('2d')//we want a 2d context hence we are using the variable c to save canvas context
-console.log(c)
+//console.log(c)
 
 canvas.width = 1024//window.innerWidth;//making canvas fit to full screen's width
 canvas.height = 576//window.innerHeight;//making canvas fit to full screen's width
@@ -39,17 +46,34 @@ class Player{//creating player class\
             //  |0,5
             //top left is 0,0 in a canvas, as you go down y axis value increases
         }
-        this.width=30;
-        this.height=30;
-        
+        this.width=66;
+        this.height=150;
+        this.frames=0
+        this.image=createImage(spriteStandRight)
+        this.sprites={
+            stand:{
+                right:createImage(spriteStandRight),
+                cropWidth:177,
+                width:66
+            },
+            run:{
+                right: createImage(spriteRunRight),
+                cropWidth:340,
+                width:127.875
+            },
+        }
+        this.currentSprite=this.sprites.stand.right;
+        this.cropWidth=177;
     }
 
     draw(){//creating draw method
-        c.fillStyle=('red')//changing color of canvas
-        c.fillRect(this.position.x,this.position.y, this.width,this.height)
+        //c.fillStyle=('red')//changing color of canvas
+        c.drawImage(this.image,this.cropWidth*this.frames,0,this.cropWidth,400,this.position.x,this.position.y,this.width,this.height);
        
     }
     update(){
+        this.frames++;
+        if(this.frames>28){this.frames=0}
         //altering player property
         this.draw();
         this.position.y += this.velocity.y;
@@ -83,7 +107,7 @@ class Platform{
     draw(){
         //c.fillStyle='blue'
         //c.fillRect(this.position.x, this.position.y, this.width, this.height)
-        c.drawImage(this.image,this.position.x,this.position.y );
+        c.drawImage(this.image,this.position.x,this.position.y);
     }
     
 };
@@ -104,7 +128,7 @@ class GenericObject{
     draw(){
         //c.fillStyle='blue'
         //c.fillRect(this.position.x, this.position.y, this.width, this.height)
-        c.drawImage(this.image,this.position.x,this.position.y );
+        c.drawImage(this.image,this.position.x,this.position.y);
     }
     
 };
@@ -278,18 +302,23 @@ window.addEventListener('keydown', ({keyCode})=>{
             break
         case 68:
             console.log('right')
+            
             keys.right.pressed=true;
+            p1.currentSprite = p1.sprites.run.right;
+            p1.currentCropWidth = p1.sprites.run.cropWidth;
+            p1.width = p1.sprites.run.width;
+            
             //p1.velocity.x+=1;
             break
-            case 87:
-                console.log('up')
-                if (keyCode.repeat) { return }
-                p1.velocity.y-=10
-                if(p1.position.y<= 0.2*canvas.height){
-                    p1.velocity.y+=25;
-                }
+        case 87:
+            console.log('up')
+            if (keyCode.repeat) { return }
+            p1.velocity.y-=10
+            if(p1.position.y<= 0.2*canvas.height){
+                p1.velocity.y+=25;
+            }
                 
-                break
+            break
                 
                 
                 

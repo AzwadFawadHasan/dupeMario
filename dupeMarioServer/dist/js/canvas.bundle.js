@@ -138,6 +138,58 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/img/spriteRunLeft.png":
+/*!***********************************!*\
+  !*** ./src/img/spriteRunLeft.png ***!
+  \***********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "c67ea51444aafa9bdcd5bdfd4f4a55bb.png");
+
+/***/ }),
+
+/***/ "./src/img/spriteRunRight.png":
+/*!************************************!*\
+  !*** ./src/img/spriteRunRight.png ***!
+  \************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "a2f75989924952a7e49ce0405d487c93.png");
+
+/***/ }),
+
+/***/ "./src/img/spriteStandLeft.png":
+/*!*************************************!*\
+  !*** ./src/img/spriteStandLeft.png ***!
+  \*************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "11514f48f22f6d8e3cf748e45e3e1ffb.png");
+
+/***/ }),
+
+/***/ "./src/img/spriteStandRight.png":
+/*!**************************************!*\
+  !*** ./src/img/spriteStandRight.png ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "01e8f15e899155c68950c40e0a6b8df0.png");
+
+/***/ }),
+
 /***/ "./src/js/canvas.js":
 /*!**************************!*\
   !*** ./src/js/canvas.js ***!
@@ -151,6 +203,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _img_hills_png__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../img/hills.png */ "./src/img/hills.png");
 /* harmony import */ var _img_background_png__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../img/background.png */ "./src/img/background.png");
 /* harmony import */ var _img_platformSmallTall_png__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../img/platformSmallTall.png */ "./src/img/platformSmallTall.png");
+/* harmony import */ var _img_spriteRunLeft_png__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../img/spriteRunLeft.png */ "./src/img/spriteRunLeft.png");
+/* harmony import */ var _img_spriteRunRight_png__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../img/spriteRunRight.png */ "./src/img/spriteRunRight.png");
+/* harmony import */ var _img_spriteStandLeft_png__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../img/spriteStandLeft.png */ "./src/img/spriteStandLeft.png");
+/* harmony import */ var _img_spriteStandRight_png__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../img/spriteStandRight.png */ "./src/img/spriteStandRight.png");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -161,15 +217,19 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
-console.log(_img_platform_png__WEBPACK_IMPORTED_MODULE_0__["default"]);
-console.log(_img_hills_png__WEBPACK_IMPORTED_MODULE_1__["default"]);
-console.log(_img_background_png__WEBPACK_IMPORTED_MODULE_2__["default"]);
+
+
+
+
+console.log(_img_spriteRunRight_png__WEBPACK_IMPORTED_MODULE_5__["default"]); //console.log(hills)
+//console.log(background)
+
 var canvas = document.querySelector('canvas'); //the query selector will select the html canvas element
+//console.log(canvas )
 
-console.log(canvas);
 var c = canvas.getContext('2d'); //we want a 2d context hence we are using the variable c to save canvas context
+//console.log(c)
 
-console.log(c);
 canvas.width = 1024; //window.innerWidth;//making canvas fit to full screen's width
 
 canvas.height = 576; //window.innerHeight;//making canvas fit to full screen's width
@@ -201,22 +261,43 @@ var Player = /*#__PURE__*/function () {
       //top left is 0,0 in a canvas, as you go down y axis value increases
 
     };
-    this.width = 30;
-    this.height = 30;
+    this.width = 66;
+    this.height = 150;
+    this.frames = 0;
+    this.image = createImage(_img_spriteStandRight_png__WEBPACK_IMPORTED_MODULE_7__["default"]);
+    this.sprites = {
+      stand: {
+        right: createImage(_img_spriteStandRight_png__WEBPACK_IMPORTED_MODULE_7__["default"]),
+        cropWidth: 177,
+        width: 66
+      },
+      run: {
+        right: createImage(_img_spriteRunRight_png__WEBPACK_IMPORTED_MODULE_5__["default"]),
+        cropWidth: 340,
+        width: 127.875
+      }
+    };
+    this.currentSprite = this.sprites.stand.right;
+    this.cropWidth = 177;
   }
 
   _createClass(Player, [{
     key: "draw",
     value: function draw() {
       //creating draw method
-      c.fillStyle = 'red'; //changing color of canvas
-
-      c.fillRect(this.position.x, this.position.y, this.width, this.height);
+      //c.fillStyle=('red')//changing color of canvas
+      c.drawImage(this.image, this.cropWidth * this.frames, 0, this.cropWidth, 400, this.position.x, this.position.y, this.width, this.height);
     }
   }, {
     key: "update",
     value: function update() {
-      //altering player property
+      this.frames++;
+
+      if (this.frames > 28) {
+        this.frames = 0;
+      } //altering player property
+
+
       this.draw();
       this.position.y += this.velocity.y;
       this.position.x += this.velocity.x;
@@ -458,7 +539,10 @@ window.addEventListener('keydown', function (_ref3) {
 
     case 68:
       console.log('right');
-      keys.right.pressed = true; //p1.velocity.x+=1;
+      keys.right.pressed = true;
+      p1.currentSprite = p1.sprites.run.right;
+      p1.currentCropWidth = p1.sprites.run.cropWidth;
+      p1.width = p1.sprites.run.width; //p1.velocity.x+=1;
 
       break;
 
