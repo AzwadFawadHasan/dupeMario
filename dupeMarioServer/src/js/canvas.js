@@ -1,5 +1,10 @@
 import platform from '../img/platform.png'
+import hills from '../img/hills.png'
+import background from '../img/background.png'
+
 console.log(platform)
+console.log(hills)
+console.log(background)
 const canvas = document.querySelector('canvas'); //the query selector will select the html canvas element
 console.log(canvas )
 const c = canvas.getContext('2d')//we want a 2d context hence we are using the variable c to save canvas context
@@ -50,6 +55,12 @@ class Player{//creating player class
         else this.velocity.y = 0;//stops player from going down the canvas
     }
 }
+function createImage(imageSrc){
+    const image = new Image();
+    image.src =imageSrc;
+    return image;
+    
+}
 
 //creating a loop for the update method so that we can see the changes to the character in real time
 
@@ -73,11 +84,40 @@ class Platform{
     
 };
 
-const image = new Image();
-image.src =platform;
+
+class GenericObject{
+    constructor({x,y, image}){
+        this.position={
+            x:x,y:y// we could. also write just only x and y
+
+        }
+        this.image = image
+        this.width =image.width
+        this.height =image.height
+        
+    
+    }
+    draw(){
+        //c.fillStyle='blue'
+        //c.fillRect(this.position.x, this.position.y, this.width, this.height)
+        c.drawImage(this.image,this.position.x,this.position.y );
+    }
+    
+};
+
+const genericObjects = [new GenericObject({
+    x:-1,y:-1,image:createImage(background)
+}), new GenericObject({
+    x:-1,y:-1,image:createImage(hills)
+})]
+
+
+
+
+const platformImage = createImage(platform)
 const p1 = new Player();
 //const platform = new Platform();
-const platforms = [new Platform({x:-1,y:470,image:image}),new Platform({x:image.width-3,y:470, image})]
+const platforms = [new Platform({x:-1,y:470,image:platformImage}),new Platform({x:platformImage.width-3,y:470, image:platformImage})]
 
 
 const keys={
@@ -103,6 +143,12 @@ function animate(){
     c.fillStyle='white'
     c.fillRect(0,0,canvas.width,canvas.height);//clears canvas to help us see the shape of the rectangle
     //c.clearRect(0,0,canvas.width,canvas.height);//clears canvas to help us see the shape of the rectangle
+    
+    //rendering generic objects first on the screen before the platforms
+    genericObjects.forEach(g=>{
+        g.draw();
+    })
+    
     platforms.forEach((platform)=>{
       platform.draw();
       
@@ -122,6 +168,9 @@ function animate(){
         p1.velocity.x=0;//stop if nothing is pressed
         if(keys.right.pressed){
             scrollOffset+=5
+            genericObjects.forEach(genericObject=>{
+                genericObject.position.x-=3;
+            })
             platforms.forEach((platform)=>{
                 //platform.draw();
                 platform.position.x-=5;
@@ -130,6 +179,9 @@ function animate(){
 
         }else if(keys.left.pressed){
             scrollOffset-=5
+            genericObjects.forEach(genericObject=>{
+                genericObject.position.x+=3;
+            })
             platforms.forEach((platform)=>{
                // platform.draw();
                platform.position.x+=5;
@@ -198,7 +250,7 @@ window.addEventListener('keydown', ({keyCode})=>{
             break
             case 87:
                 console.log('up')
-                
+                if (keyCode.repeat) { return }
                 p1.velocity.y-=20
                 if(p1.position.y<= 0.2*canvas.height){
                     p1.velocity.y+=60;
