@@ -16,7 +16,9 @@ canvas.height = 576//window.innerHeight;//making canvas fit to full screen's wid
 //canvas.height = window.innerHeight;//making canvas fit to full screen's width
 
 
-const gravity = 0.5;
+let gravity = 0.5;
+
+
 
 class Player{//creating player class
     constructor(){
@@ -52,7 +54,7 @@ class Player{//creating player class
         this.position.x += this.velocity.x;
         if(this.position.y + this.height  + this.velocity.y <= canvas.height)
             this.velocity.y+= gravity;
-        else this.velocity.y = 0;//stops player from going down the canvas
+        //else this.velocity.y = 0;//stops player from going down the canvas
     }
 }
 function createImage(imageSrc){
@@ -105,7 +107,7 @@ class GenericObject{
     
 };
 
-const genericObjects = [new GenericObject({
+let genericObjects = [new GenericObject({
     x:-1,y:-1,image:createImage(background)
 }), new GenericObject({
     x:-1,y:-1,image:createImage(hills)
@@ -114,10 +116,12 @@ const genericObjects = [new GenericObject({
 
 
 
-const platformImage = createImage(platform)
-const p1 = new Player();
+let platformImage = createImage(platform)
+let p1 = new Player();
 //const platform = new Platform();
-const platforms = [new Platform({x:-1,y:470,image:platformImage}),new Platform({x:platformImage.width-3,y:470, image:platformImage})]
+let platforms = [new Platform({x:-1,y:470,image:platformImage}), new Platform({x:platformImage.width-3,y:470, image:platformImage}),
+    new Platform({x:platformImage.width*2+100,y:470, image:platformImage})
+]
 
 
 const keys={
@@ -132,11 +136,30 @@ const keys={
 //to determine how far our player has moved
 let scrollOffset =0;
 
+
+function init(){
+
+
+
+
+ platformImage = createImage(platform)
+ p1 = new Player();
+// platform = new Platform();
+ platforms = [new Platform({x:-1,y:470,image:platformImage}), new Platform({x:platformImage.width-3,y:470, image:platformImage}),
+    new Platform({x:platformImage.width*2+100,y:470, image:platformImage})
+]
+
+
+
+
+//to determine how far our player has moved
+ scrollOffset =0;
+
 //p1.draw();
 //p1.update();
 
 //creating a loop for the update method so that we can see the changes to the character in real time
-
+}
 function animate(){
     requestAnimationFrame(animate)
     //console.log('go')
@@ -211,6 +234,11 @@ if(scrollOffset>2000){
     console.log('you win')
     //document.write('you win')
     return
+}
+if(p1.position.y > canvas.height){
+    console.log('u lose')
+    //document.write('u lose ')
+    init();
 }
 
 
