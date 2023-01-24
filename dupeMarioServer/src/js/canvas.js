@@ -8,7 +8,7 @@ import spriteRunRight from '../img/spriteRunRight.png'
 import spriteStandLeft from '../img/spriteStandLeft.png'
 import spriteStandRight from '../img/spriteStandRight.png'
 
-
+let lastKey=0;
 
 console.log(spriteRunRight)
 //console.log(hills)
@@ -50,30 +50,43 @@ class Player{//creating player class\
         this.height=150;
         this.frames=0
         this.image=createImage(spriteStandRight)
+
         this.sprites={
             stand:{
                 right:createImage(spriteStandRight),
+                left:createImage(spriteStandLeft),
                 cropWidth:177,
                 width:66
             },
             run:{
                 right: createImage(spriteRunRight),
+                left:createImage(spriteRunLeft),
                 cropWidth:340,
                 width:127.875
             },
         }
         this.currentSprite=this.sprites.stand.right;
-        this.cropWidth=177;
+        
+        this.currentCropWidth=177;
     }
 
     draw(){//creating draw method
         //c.fillStyle=('red')//changing color of canvas
-        c.drawImage(this.image,this.cropWidth*this.frames,0,this.cropWidth,400,this.position.x,this.position.y,this.width,this.height);
+        c.drawImage(this.currentSprite,
+            this.currentCropWidth*this.frames,
+            0,
+            this.currentCropWidth,
+            400,
+            this.position.x,
+            this.position.y,
+            this.width,
+            this.height);
        
     }
     update(){
         this.frames++;
-        if(this.frames>28){this.frames=0}
+        if(this.frames>59 && (this.currentSprite===this.sprites.stand.right || this.currentSprite === this.sprites.stand.left )){this.frames=0}
+        else if(this.frames>29 && (this.currentSprite===this.sprites.run.right || this.currentSprite === this.sprites.run.left )){this.frames=0}
         //altering player property
         this.draw();
         this.position.y += this.velocity.y;
@@ -205,14 +218,50 @@ function animate(){
       platform.draw();
       
     })
+
+
+    //sprites switching
+    if(keys.right.pressed && lastKey === 'right' && p1.currentSprite!==p1.sprites.run.right){
+        p1.frames=1;
+        //p1.currentSprite = p1.sprites.run.left
+        p1.currentSprite = p1.sprites.run.right;
+        p1.currentCropWidth = p1.sprites.run.cropWidth;
+        p1.width = p1.sprites.run.width;
+    }else  if(keys.left.pressed && lastKey === 'left' && p1.currentSprite!==p1.sprites.run.left){
+       // p1.frames=1;
+        //p1.currentSprite = p1.sprites.run.left
+        
+        p1.currentSprite = p1.sprites.run.left;
+        p1.currentCropWidth = p1.sprites.run.cropWidth;
+        p1.width = p1.sprites.run.width;
+    }else  if(!keys.left.pressed && lastKey === 'left' && p1.currentSprite!==p1.sprites.stand.left){
+         //p1.frames=1;
+        //p1.currentSprite = p1.sprites.run.left
+        
+        p1.currentSprite = p1.sprites.stand.left;
+        p1.currentCropWidth = p1.sprites.stand.cropWidth;
+        p1.width = p1.sprites.stand.width;
+    }else  if(!keys.right.pressed && lastKey === 'right' && p1.currentSprite!==p1.sprites.stand.right){
+        // p1.frames=1;
+        //p1.currentSprite = p1.sprites.run.left
+        
+        p1.currentSprite = p1.sprites.stand.right;
+        p1.currentCropWidth = p1.sprites.stand.cropWidth;
+        p1.width = p1.sprites.stand.width;
+    }
+
+
+
     p1.update();
 
     if(keys.right.pressed && p1.position.x<400){//move right
+        p1.currentSprite=p1.sprites.run.right;
         p1.velocity.x=p1.speed;
 
 
     }
     else if((keys.left.pressed && p1.position.x>100) || (keys.left.pressed && scrollOffset==0 && p1.position.x>0)){//move left
+        p1.currentSprite=p1.sprites.run.right;
         p1.velocity.x=-p1.speed;;
 
 
@@ -295,6 +344,7 @@ window.addEventListener('keydown', ({keyCode})=>{
         case 65:
             console.log('left')
             keys.left.pressed=true;
+            lastKey='left'
             break
         
         case 83:
@@ -304,11 +354,9 @@ window.addEventListener('keydown', ({keyCode})=>{
             console.log('right')
             
             keys.right.pressed=true;
-            p1.currentSprite = p1.sprites.run.right;
-            p1.currentCropWidth = p1.sprites.run.cropWidth;
-            p1.width = p1.sprites.run.width;
             
-            //p1.velocity.x+=1;
+            
+            lastKey='right'//p1.velocity.x+=1;
             break
         case 87:
             console.log('up')
@@ -319,12 +367,7 @@ window.addEventListener('keydown', ({keyCode})=>{
             }
                 
             break
-                
-                
-                
-                
-                
-                
+
             }
             
         })
@@ -345,8 +388,8 @@ window.addEventListener('keydown', ({keyCode})=>{
                         case 68:
                             console.log('right')
                             keys.right.pressed=false;
-            //p1.velocity.x=0;
-            break
+                      
+                        break
         case 87:
             console.log('up')
             
