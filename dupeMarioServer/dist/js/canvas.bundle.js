@@ -221,6 +221,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
+var lastKey = 0;
 console.log(_img_spriteRunRight_png__WEBPACK_IMPORTED_MODULE_5__["default"]); //console.log(hills)
 //console.log(background)
 
@@ -268,17 +269,19 @@ var Player = /*#__PURE__*/function () {
     this.sprites = {
       stand: {
         right: createImage(_img_spriteStandRight_png__WEBPACK_IMPORTED_MODULE_7__["default"]),
+        left: createImage(_img_spriteStandLeft_png__WEBPACK_IMPORTED_MODULE_6__["default"]),
         cropWidth: 177,
         width: 66
       },
       run: {
         right: createImage(_img_spriteRunRight_png__WEBPACK_IMPORTED_MODULE_5__["default"]),
+        left: createImage(_img_spriteRunLeft_png__WEBPACK_IMPORTED_MODULE_4__["default"]),
         cropWidth: 340,
         width: 127.875
       }
     };
     this.currentSprite = this.sprites.stand.right;
-    this.cropWidth = 177;
+    this.currentCropWidth = 177;
   }
 
   _createClass(Player, [{
@@ -286,14 +289,16 @@ var Player = /*#__PURE__*/function () {
     value: function draw() {
       //creating draw method
       //c.fillStyle=('red')//changing color of canvas
-      c.drawImage(this.image, this.cropWidth * this.frames, 0, this.cropWidth, 400, this.position.x, this.position.y, this.width, this.height);
+      c.drawImage(this.currentSprite, this.currentCropWidth * this.frames, 0, this.currentCropWidth, 400, this.position.x, this.position.y, this.width, this.height);
     }
   }, {
     key: "update",
     value: function update() {
       this.frames++;
 
-      if (this.frames > 28) {
+      if (this.frames > 59 && (this.currentSprite === this.sprites.stand.right || this.currentSprite === this.sprites.stand.left)) {
+        this.frames = 0;
+      } else if (this.frames > 29 && (this.currentSprite === this.sprites.run.right || this.currentSprite === this.sprites.run.left)) {
         this.frames = 0;
       } //altering player property
 
@@ -458,14 +463,43 @@ function animate() {
   });
   platforms.forEach(function (platform) {
     platform.draw();
-  });
+  }); //sprites switching
+
+  if (keys.right.pressed && lastKey === 'right' && p1.currentSprite !== p1.sprites.run.right) {
+    p1.frames = 1; //p1.currentSprite = p1.sprites.run.left
+
+    p1.currentSprite = p1.sprites.run.right;
+    p1.currentCropWidth = p1.sprites.run.cropWidth;
+    p1.width = p1.sprites.run.width;
+  } else if (keys.left.pressed && lastKey === 'left' && p1.currentSprite !== p1.sprites.run.left) {
+    // p1.frames=1;
+    //p1.currentSprite = p1.sprites.run.left
+    p1.currentSprite = p1.sprites.run.left;
+    p1.currentCropWidth = p1.sprites.run.cropWidth;
+    p1.width = p1.sprites.run.width;
+  } else if (!keys.left.pressed && lastKey === 'left' && p1.currentSprite !== p1.sprites.stand.left) {
+    //p1.frames=1;
+    //p1.currentSprite = p1.sprites.run.left
+    p1.currentSprite = p1.sprites.stand.left;
+    p1.currentCropWidth = p1.sprites.stand.cropWidth;
+    p1.width = p1.sprites.stand.width;
+  } else if (!keys.right.pressed && lastKey === 'right' && p1.currentSprite !== p1.sprites.stand.right) {
+    // p1.frames=1;
+    //p1.currentSprite = p1.sprites.run.left
+    p1.currentSprite = p1.sprites.stand.right;
+    p1.currentCropWidth = p1.sprites.stand.cropWidth;
+    p1.width = p1.sprites.stand.width;
+  }
+
   p1.update();
 
   if (keys.right.pressed && p1.position.x < 400) {
     //move right
+    p1.currentSprite = p1.sprites.run.right;
     p1.velocity.x = p1.speed;
   } else if (keys.left.pressed && p1.position.x > 100 || keys.left.pressed && scrollOffset == 0 && p1.position.x > 0) {
     //move left
+    p1.currentSprite = p1.sprites.run.right;
     p1.velocity.x = -p1.speed;
     ;
   } else {
@@ -531,6 +565,7 @@ window.addEventListener('keydown', function (_ref3) {
     case 65:
       console.log('left');
       keys.left.pressed = true;
+      lastKey = 'left';
       break;
 
     case 83:
@@ -540,9 +575,7 @@ window.addEventListener('keydown', function (_ref3) {
     case 68:
       console.log('right');
       keys.right.pressed = true;
-      p1.currentSprite = p1.sprites.run.right;
-      p1.currentCropWidth = p1.sprites.run.cropWidth;
-      p1.width = p1.sprites.run.width; //p1.velocity.x+=1;
+      lastKey = 'right'; //p1.velocity.x+=1;
 
       break;
 
@@ -578,8 +611,7 @@ window.addEventListener('keyup', function (_ref4) {
 
     case 68:
       console.log('right');
-      keys.right.pressed = false; //p1.velocity.x=0;
-
+      keys.right.pressed = false;
       break;
 
     case 87:
